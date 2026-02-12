@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import csv
 
@@ -12,21 +13,13 @@ from .verifier import verify_emails
 def index(request):
     return render(request, 'email_verifier/index.html')
 
-
+@csrf_exempt
 def verify_email_file(request):
-    """
-    Handles:
-    - File upload (.csv, .xlsx, .txt)
-    - Email verification
-    - Report generation
-    - Download of verified emails
-    """
+    if request.method == "POST" and request.FILES.get("emails"):
+        uploaded_file = request.FILES["emails"]
+        file_name = uploaded_file.name.lower()
 
-    if request.method == "POST" and request.FILES.get("file"):
-        uploaded_file = request.FILES["file"]
-        file_name = uploaded_file.name
-
-        # Read emails from file
+        # Read emails
         if file_name.endswith(".csv"):
             df = pd.read_csv(uploaded_file)
             emails = df.iloc[:, 0].astype(str).tolist()
@@ -39,35 +32,27 @@ def verify_email_file(request):
             emails = uploaded_file.read().decode("utf-8").splitlines()
 
         else:
-            return JsonResponse({"error": "Unsupported file format"}, status=400)
+            return render(request, "email_verifier/index.html", {
+                "error": "Unsupported file format"
+            })
 
-        # Clean emails
         cleaned = clean_emails(emails)
-
-        # Remove duplicates
         unique, dup_count = remove_duplicates(cleaned)
-
-        # Verify emails
         valid_emails, invalid_emails = verify_emails(unique)
 
-        # Verification report
-        report = {
-            "total_emails": len(emails),
-            "duplicates_removed": dup_count,
+        context = {
+            "valid": valid_emails,
+            "invalid": invalid_emails,
+            "total": len(emails),
             "valid_count": len(valid_emails),
             "invalid_count": len(invalid_emails),
+            "duplicates_removed": dup_count,
         }
 
-        # Store verified emails in session (for download)
+        # store for download
         request.session["verified_emails"] = valid_emails
 
-        return JsonResponse({
-            "report": report,
-            "valid_emails": valid_emails,
-            "invalid_emails": invalid_emails
-        })
-
-    return JsonResponse({"message": "Upload a file to verify emails"})
+        return render(request, "email_verifier/index.html", context)
 
 
 def download_verified_emails(request):
