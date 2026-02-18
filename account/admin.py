@@ -13,8 +13,8 @@ class UserAdmin(BaseUserAdmin):
         'full_name',
         'is_verified',
         'is_active',
-        'email_quota',
-        'total_emails_sent',
+        'daily_limit',
+        'total_sent_today',
     )
 
     search_fields = ('email', 'full_name')
@@ -35,7 +35,7 @@ class UserAdmin(BaseUserAdmin):
             )
         }),
         ('Email Stats', {
-            'fields': ('email_quota', 'total_emails_sent')
+            'fields': ('daily_limit', 'total_sent_today')
         }),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )

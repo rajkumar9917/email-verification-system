@@ -42,9 +42,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
-    # Future ready fields (so admin error nahi aayega)
-    email_quota = models.IntegerField(default=1000)
-    total_emails_sent = models.IntegerField(default=0)
+    daily_limit = models.IntegerField(default=1000)
+    total_sent_today = models.IntegerField(default=0)
+    last_sent_date = models.DateField(null=True, blank=True)
 
     date_joined = models.DateTimeField(default=timezone.now)
 

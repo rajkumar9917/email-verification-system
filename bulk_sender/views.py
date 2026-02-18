@@ -5,6 +5,7 @@ from celery import group
 from .forms import EmailForm
 from .tasks import send_email
 from .utils import get_valid_emails
+from .models import Campaign, Recipient
 
 
 @login_required
@@ -21,40 +22,34 @@ def index(request):
             emails = get_valid_emails(file)
 
             if not emails:
-                messages.warning(
-                    request,
-                    "No valid email addresses found in the uploaded CSV file."
-                )
+                messages.warning(request, "No valid emails found.")
                 return redirect("bulk_sender:index")
 
-            try:
-                group(
-                    send_email.s(email, subject, message_body)
-                    for email in emails
-                ).apply_async()
-
-                messages.success(
-                    request,
-                    f"{len(emails)} emails successfully sent!"
-                )
-
-            except Exception as e:
-                messages.error(
-                    request,
-                    f"Failed to send emails. Error: {str(e)}"
-                )
-
-            return redirect("bulk_sender:index")
-
-        else:
-            messages.error(
-                request,
-                "Form submission failed. Please correct the errors below."
+            campaign = Campaign.objects.create(
+                user=request.user,
+                subject=subject,
+                message=message_body,
+                total_emails=len(emails)
             )
+
+            recipients = [
+                Recipient(campaign=campaign, email=email)
+                for email in emails
+            ]
+
+            Recipient.objects.bulk_create(recipients)
+
+            job = group(
+                send_email.s(recipient.id)
+                for recipient in campaign.recipient_set.all()
+            )
+
+            job.apply_async()
+
+            messages.success(request, "Emails are being sent!")
+            return redirect("bulk_sender:index")
 
     else:
         form = EmailForm()
 
-    return render(request, "bulk_sender/index.html", {
-        "form": form
-    })
+    return render(request, "bulk_sender/index.html", {"form": form})

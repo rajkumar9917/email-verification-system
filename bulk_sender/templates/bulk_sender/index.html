@@ -1,50 +1,119 @@
 {% extends "website/base.html" %} {% block content %}
- <h2>Send Bulk Email</h2>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+<main class="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 py-12 px-4">
 
-        <!-- Subject -->
-        <div>
-            <label for="id_subject">Subject:</label><br>
-            {{ form.subject }}
-            {% if form.subject.errors %}
-                <div style="color:red;">
-                    {{ form.subject.errors }}
-                </div>
-            {% endif %}
+  <form method="POST" enctype="multipart/form-data"
+        class="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 space-y-10">
+
+    {% csrf_token %}
+
+    <!-- Page Header -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-slate-900 dark:text-white">
+        Create New Campaign
+      </h2>
+      <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+        Configure your bulk email campaign and launch it
+      </p>
+    </div>
+
+    <!-- Upload Section -->
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Recipients List (CSV)</h3>
+
+      <div class="border-2 border-dashed rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-800">
+
+        <p class="font-medium">Upload your CSV file</p>
+
+        <label class="mt-4 inline-block px-6 py-3
+                       bg-primary text-white rounded-xl cursor-pointer
+                       shadow text-sm font-semibold">
+
+          Choose File
+
+          <input
+            type="file"
+            name="file"
+            accept=".csv"
+            class="hidden"
+            required
+            onchange="showFileName(this)"
+          />
+        </label>
+
+        <p id="fileText" class="mt-2 text-sm text-slate-500">
+          No file selected
+        </p>
+      </div>
+    </section>
+
+    <!-- Subject -->
+    <div>
+      <label class="block text-sm font-semibold mb-2">Subject</label>
+      <input
+        type="text"
+        name="subject"
+        required
+        class="w-full rounded-lg border px-4 py-2.5 text-sm shadow-sm"
+        placeholder="Enter email subject"
+      />
+    </div>
+
+    <!-- Editor -->
+    <div>
+      <label class="block text-sm font-semibold mb-2">Email Body</label>
+
+      <div class="border rounded-lg overflow-hidden shadow-sm">
+        <div class="bg-slate-50 border-b p-2 flex gap-2">
+          <button type="button" id="boldBtn" class="p-1.5 font-bold">B</button>
+          <button type="button" id="italicBtn" class="p-1.5 italic">I</button>
+          <button type="button" id="underlineBtn" class="p-1.5 underline">U</button>
         </div>
 
-        <br>
+        <div
+          id="editor"
+          contenteditable="true"
+          class="p-4 min-h-[200px] outline-none"
+        ></div>
 
-        <!-- Message -->
-        <div>
-            <label for="id_message">Message:</label><br>
-            {{ form.message }}
-            {% if form.message.errors %}
-                <div style="color:red;">
-                    {{ form.message.errors }}
-                </div>
-            {% endif %}
-        </div>
+        <input type="hidden" id="hiddenMessage" name="message" />
+      </div>
+    </div>
 
-        <br>
+    <!-- Submit -->
+    <div class="text-center">
+      <button type="submit"
+        class="px-10 py-3 bg-primary text-white rounded-xl shadow-lg font-semibold flex items-center gap-2 mx-auto">
+        Launch Campaign
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
 
-        <!-- CSV File -->
-        <div>
-            <label for="id_file">Upload CSV:</label><br>
-            {{ form.file }}
-            <small>{{ form.file.help_text }}</small>
-            {% if form.file.errors %}
-                <div style="color:red;">
-                    {{ form.file.errors }}
-                </div>
-            {% endif %}
-        </div>
+  </form>
+</main>
 
-        <br>
+<script>
+  const editor = document.getElementById("editor");
+  const hiddenMessage = document.getElementById("hiddenMessage");
 
-        <button type="submit">Send Emails</button>
+  function format(cmd) {
+    editor.focus();
+    document.execCommand(cmd, false, null);
+  }
 
-    </form>
+  boldBtn.onclick = () => format("bold");
+  italicBtn.onclick = () => format("italic");
+  underlineBtn.onclick = () => format("underline");
+
+  document.querySelector("form").addEventListener("submit", () => {
+    hiddenMessage.value = editor.innerHTML;
+  });
+
+  function showFileName(input) {
+    if (input.files.length > 0) {
+      document.getElementById("fileText").innerText =
+        input.files[0].name;
+    }
+  }
+</script>
 {% endblock %}
