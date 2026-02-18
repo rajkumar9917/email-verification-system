@@ -43,8 +43,7 @@ A full-stack Django project that allows users to **send emails, verify email add
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/yourusername/email-verification-system.git
-cd email-verification-system
+git clone https://github.com/rajkumar9917/email-verification-system.git
 
 ```
 ---
