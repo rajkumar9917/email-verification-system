@@ -6,3 +6,6 @@ def home(request):
 
 def terms_and_conditions(request):
     return render(request, 'website/terms.html')  
+
+def about(request):
+    return render(request, 'website/about.html')

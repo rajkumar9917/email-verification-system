@@ -41,64 +41,66 @@
     </div>
   </div>
 
-  {% if total is not None %}
-  
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-10">
+ {% if total is not None %}
+<div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 animate-in slide-in-from-bottom-10">
     
-    <div class="bg-surface p-6 rounded-xl border border-border-subtle shadow-lg hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden group">
-      <div class="relative z-10">
-        <p class="text-sm text-text-muted font-bold uppercase tracking-wider mb-1">Total Processed</p>
-        <h4 class="text-4xl font-black text-white">{{ total }}</h4>
-      </div>
-      <span class="material-symbols-outlined absolute -right-2 -bottom-4 text-8xl text-border-subtle opacity-30 group-hover:scale-110 transition-transform duration-500">list_alt</span>
+    <div class="relative group p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:border-primary/40">
+        <div class="flex items-center gap-4 relative z-10">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-xl">analytics</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-none mb-1.5">Total Processed</p>
+                <h4 class="text-2xl font-black text-white leading-none tracking-tight">{{ total }}</h4>
+            </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-primary/10 blur-2xl rounded-full"></div>
     </div>
 
-    <div class="bg-surface p-6 rounded-xl border border-border-subtle border-t-4 border-t-green-500 shadow-lg hover:-translate-y-1 transition-transform duration-300">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm text-text-muted font-bold uppercase tracking-wider mb-1">Valid Emails</p>
-          <h4 class="text-4xl font-black text-green-500">{{ valid_count }}</h4>
+    <div class="relative group p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:border-green-500/40">
+        <div class="flex items-center gap-4 relative z-10">
+            <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                <span class="material-symbols-outlined text-green-500 text-xl">verified</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-none mb-1.5">Valid Emails</p>
+                <h4 class="text-2xl font-black text-green-500 leading-none tracking-tight">{{ valid_count }}</h4>
+            </div>
         </div>
-        <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center border border-green-500/20">
-          <span class="material-symbols-outlined text-green-500">check_circle</span>
-        </div>
-      </div>
-      <div class="mt-4 flex items-center text-xs text-green-500 font-medium">
-        <span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>
-        High Deliverability Rate
-      </div>
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-green-500/10 blur-2xl rounded-full"></div>
     </div>
 
-    <div class="bg-surface p-6 rounded-xl border border-border-subtle border-t-4 border-t-red-500 shadow-lg hover:-translate-y-1 transition-transform duration-300">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm text-text-muted font-bold uppercase tracking-wider mb-1">Invalid & Risky</p>
-          <h4 class="text-4xl font-black text-red-500">{{ invalid_count }}</h4>
+    <div class="relative group p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:border-red-500/40">
+        <div class="flex items-center gap-4 relative z-10">
+            <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                <span class="material-symbols-outlined text-red-500 text-xl">gpp_maybe</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-none mb-1.5">Invalid & Risky</p>
+                <h4 class="text-2xl font-black text-red-500 leading-none tracking-tight">{{ invalid_count }}</h4>
+            </div>
         </div>
-        <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center border border-red-500/20 text-red-500">
-          <span class="material-symbols-outlined">report</span>
-        </div>
-      </div>
-      <div class="mt-4 flex items-center text-xs text-red-500 font-medium">
-        <span class="material-symbols-outlined text-[14px] mr-1">warning</span>
-        Bounce Risk Detected
-      </div>
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-red-500/10 blur-2xl rounded-full"></div>
     </div>
-  </div>
+</div>
 
-  <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-in-from-bottom-10 animation-delay-200">
+<div class="mt-8 flex flex-wrap items-center justify-center gap-4 animate-in slide-in-from-bottom-10 animation-delay-200">
     <a href="{% url 'email_verifier:download_csv' %}"
-       class="w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-      <span class="material-symbols-outlined text-lg">download</span>
-      Download Valid CSV
+       class="group relative px-6 py-3 bg-primary text-white font-bold rounded-xl overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]">
+        <div class="relative z-10 flex items-center gap-2 text-sm">
+            <span class="material-symbols-outlined text-lg group-hover:rotate-12 transition-transform">download</span>
+            Download Valid CSV
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
     </a>
+
     <a href="{% url 'email_verifier:download_xlsx' %}"
-       class="w-full sm:w-auto px-8 py-3.5 bg-surface hover:bg-[#1e1f32] border border-border-subtle text-white font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-      <span class="material-symbols-outlined text-lg">table_view</span>
-      Complete Report (XLSX)
+       class="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-xl text-sm transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">table_view</span>
+        Complete Report (XLSX)
     </a>
-  </div>
-  {% endif %}
+</div>
+{% endif %}
 
   {% if total is not None and total == 0 %}
   <p class="text-center text-text-muted text-sm mt-12 bg-surface py-4 rounded-lg border border-border-subtle">
