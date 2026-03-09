@@ -1,8 +1,6 @@
 import requests
-from datetime import date
 from celery import shared_task
 from django.conf import settings
-from django.utils import timezone
 from django.db.models import F
 from .models import Recipient, Campaign
 from account.models import User
@@ -22,7 +20,9 @@ def send_email(self, recipient_id):
             "name": "Athenura",
             "email": settings.DEFAULT_FROM_EMAIL
         },
-        "to": [{"email": recipient.email}],
+        "to": [
+            {"email": recipient.email}
+        ],
         "subject": campaign.subject,
         "htmlContent": campaign.message
     }
@@ -36,7 +36,7 @@ def send_email(self, recipient_id):
     try:
         response = requests.post(url, json=payload, headers=headers)
 
-        if response.status_code != 201:
+        if response.status_code not in [200, 201, 202]:
             raise Exception(response.text)
 
         recipient.status = "sent"

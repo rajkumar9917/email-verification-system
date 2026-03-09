@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from celery import group
+
 from .forms import EmailForm
 from .tasks import send_email
 from .utils import get_valid_emails
@@ -39,14 +40,16 @@ def index(request):
 
             Recipient.objects.bulk_create(recipients)
 
+            recipients = Recipient.objects.filter(campaign=campaign)
+
             job = group(
                 send_email.s(recipient.id)
-                for recipient in campaign.recipient_set.all()
+                for recipient in recipients
             )
 
             job.apply_async()
 
-            messages.success(request, "Emails are being sent!")
+            messages.success(request, "Emails are being sent in background!")
             return redirect("bulk_sender:index")
 
     else:
