@@ -43,9 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
-    daily_limit = models.IntegerField(default=1000)
-    total_sent_today = models.IntegerField(default=0)
-    last_sent_date = models.DateField(null=True, blank=True)
+    total_sent_emails = models.PositiveIntegerField(default=0)
 
     date_joined = models.DateTimeField(default=timezone.now)
 

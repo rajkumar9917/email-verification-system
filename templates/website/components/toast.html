@@ -2,7 +2,6 @@
      class="fixed top-6 right-6 z-[100] flex flex-col gap-4 w-full max-w-[380px]"></div>
 
 <style>
-/* Smooth Entry and Exit Animations */
 @keyframes toastSlideIn {
     from { transform: translateX(120%) scale(0.9); opacity: 0; }
     to { transform: translateX(0) scale(1); opacity: 1; }
@@ -20,7 +19,6 @@
     animation: toastFadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Custom Scrollbar and helper classes for the toast specifically */
 .toast-glass {
     background: rgba(20, 21, 34, 0.8) !important; /* bg-surface with transparency */
     backdrop-filter: blur(12px) saturate(180%);
@@ -31,7 +29,6 @@
 <script>
 function createToast(message, type="success", duration=4000) {
 
-    // Theme-matched colors based on base.html properties
     const configurations = {
         success: {
             border: "border-green-500/50",
@@ -111,13 +108,7 @@ function removeToast(toast) {
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     {% for message in messages %}
-        // Map Django message tags to our toast types
-        let tag = "{{ message.tags }}";
-        if (tag === "debug" || tag === "info") tag = "info";
-        if (tag === "error") tag = "error";
-        if (tag === "warning") tag = "warning";
-        
-        createToast("{{ message|escapejs }}", tag);
+        createToast("{{ message|escapejs }}", "{{ message.tags }}");
     {% endfor %}
 });
 </script>

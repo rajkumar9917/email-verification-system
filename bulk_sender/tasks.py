@@ -15,29 +15,14 @@ def send_email(self, recipient_id):
     campaign = recipient.campaign
     user = campaign.user
 
-    if user.last_sent_date != date.today():
-        user.total_sent_today = 0
-        user.last_sent_date = date.today()
-        user.save()
-
-    if user.total_sent_today >= user.daily_limit:
-        recipient.status = "failed"
-        recipient.save()
-        Campaign.objects.filter(id=campaign.id).update(
-            failed_count=F("failed_count") + 1
-        )
-        return "Daily limit exceeded"
-
     url = "https://api.brevo.com/v3/smtp/email"
 
     payload = {
         "sender": {
-            "name": "Bulk Sender",
+            "name": "Athenura",
             "email": settings.DEFAULT_FROM_EMAIL
         },
-        "to": [
-            {"email": recipient.email}
-        ],
+        "to": [{"email": recipient.email}],
         "subject": campaign.subject,
         "htmlContent": campaign.message
     }
@@ -62,7 +47,7 @@ def send_email(self, recipient_id):
         )
 
         User.objects.filter(id=user.id).update(
-            total_sent_today=F("total_sent_today") + 1
+            total_sent_emails=F("total_sent_emails") + 1
         )
 
         return "Sent Successfully"

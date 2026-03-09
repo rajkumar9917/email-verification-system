@@ -10,13 +10,13 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
-    context = {}
+
+    context = request.session.get("email_results", {})
 
     if request.method == "POST" and request.FILES.get("emails"):
         uploaded_file = request.FILES["emails"]
         file_name = uploaded_file.name.lower()
 
-        # ---------- Read emails ----------
         try:
             if file_name.endswith(".txt"):
                 emails = uploaded_file.read().decode("utf-8", errors="ignore").splitlines()
@@ -33,19 +33,14 @@ def index(request):
                 context["error"] = "Unsupported file format"
                 return render(request, "email_verifier/index.html", context)
 
-        except Exception as e:
+        except Exception:
             context["error"] = "File could not be processed"
             return render(request, "email_verifier/index.html", context)
 
-        # ---------- Process emails ----------
         cleaned = clean_emails(emails)
         unique_emails, duplicate_count = remove_duplicates(cleaned)
         valid_emails, invalid_emails = verify_emails(unique_emails)
 
-        # store valid emails for download
-        request.session["verified_emails"] = valid_emails
-
-        # ---------- Context ----------
         context = {
             "total": len(emails),
             "valid": valid_emails,
@@ -54,6 +49,9 @@ def index(request):
             "invalid_count": len(invalid_emails),
             "duplicates_removed": duplicate_count,
         }
+
+        request.session["email_results"] = context
+        request.session["verified_emails"] = valid_emails
 
     return render(request, "email_verifier/index.html", context)
 

@@ -14,7 +14,7 @@ def send_verification_email(user, verification_link):
 
     payload = {
         "sender": {
-            "name": "EmailPro",
+            "name": "Athenura",
             "email": settings.DEFAULT_FROM_EMAIL
         },
         "to": [

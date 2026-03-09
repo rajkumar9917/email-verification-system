@@ -13,8 +13,7 @@ class UserAdmin(BaseUserAdmin):
         'full_name',
         'is_verified',
         'is_active',
-        'daily_limit',
-        'total_sent_today',
+        'total_sent_emails',
     )
 
     search_fields = ('email', 'full_name')
