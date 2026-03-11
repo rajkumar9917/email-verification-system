@@ -37,7 +37,7 @@ def signup_view(request):
                 reverse("account:verify_email", args=[verification.token])
             )
 
-            print("Verification:", verification_link)
+            # print("Verification:", verification_link)
             send_verification_email(user, verification_link)
 
             messages.success(
@@ -186,7 +186,7 @@ def forgot_password_view(request):
                     "token": token
                 })
             )
-            print("reset link:", reset_link)
+            # print("reset link:", reset_link)
 
             # Send email using Brevo API
             send_reset_email(email, reset_link)
